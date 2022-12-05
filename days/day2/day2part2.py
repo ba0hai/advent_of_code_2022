@@ -4,14 +4,16 @@ class RPS(Enum):
     ROCK = 1
     PAPER = 2
     SCISSORS = 3
+
+class RPSResult(Enum):
     WIN = 6
     LOSE = 0
     DRAW = 3
 
-class RESULT(Enum):
-    X = RPS.LOSE
-    Y = RPS.DRAW
-    Z = RPS.WIN
+class Result(Enum):
+    X = RPSResult.LOSE
+    Y = RPSResult.DRAW
+    Z = RPSResult.WIN
 
 class Player1Play(Enum):
     A = RPS.ROCK
@@ -54,21 +56,37 @@ def get_input():
 
     return lines
 
+def what_to_play(opponent, result):
+    if result.value == RPSResult.WIN:
+        if opponent.value == RPS.ROCK:
+            return RPS.PAPER
+        elif opponent.value == RPS.SCISSORS:
+            return RPS.ROCK
+        elif opponent.value == RPS.PAPER:
+            return RPS.SCISSORS
+    else:
+        if opponent.value == RPS.ROCK:
+            return RPS.SCISSORS
+        elif opponent.value == RPS.SCISSORS:
+            return RPS.PAPER
+        elif opponent.value == RPS.PAPER:
+            return RPS.ROCK
+
 def solve():
     input = get_input()
     total_score = 0
     for val in input:
         score = 0
         play1 = Player1Play[val[0]]
-        play2 = Player2Play[val[1]]
-        result = game_result(play1.value, play2.value)
-        if result == 0:
-            score = play2.value.value + 3
-        elif result == 1:
-            score = play2.value.value + 6
-        elif result == -1:
-            score = play2.value.value
-        print((play1, play2), result, score)
+        result = Result[val[1]]
+        if result.value == RPSResult.DRAW:
+            score = 3 + play1.value.value
+        elif result.value == RPSResult.WIN:
+            to_play = what_to_play(play1, result)
+            score = 6 + to_play.value
+        elif result.value == RPSResult.LOSE:
+            to_play = what_to_play(play1, result)
+            score = to_play.value
         total_score += (score * input[val])
     return total_score
 
