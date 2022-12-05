@@ -19,13 +19,10 @@ def get_input():
 def solve():
     input = get_input()
     sums = []
-    largest_3 = []
-
     for list in input:
         np_list = np.asarray(list)
         summ = np.sum(np_list)
         heapq.heappush(sums, summ)
-
     return sum(heapq.nlargest(3, sums))
 
 def main():
